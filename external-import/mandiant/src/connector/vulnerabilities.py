@@ -2,6 +2,13 @@ import stix2
 
 from . import utils
 
+# Función que define el marking según el tipo de entidad
+def get_marking(entity_id: str):
+    if "vulnerability" in entity_id:
+        return "marking-definition--34098fce-860f-48ae-8e50-ebd3cc5e41da"    #TLP_GREEN
+    else:
+        return None
+
 
 def process(connector, vulnerability):
     vulnerability_id = vulnerability.get("id")
@@ -33,7 +40,8 @@ def process(connector, vulnerability):
         description=utils.sanitizer("description", vulnerability),
         created=utils.sanitizer("publish_date", vulnerability),
         created_by_ref=connector.identity["standard_id"],
-        object_marking_refs=connector.mandiant_marking,
+        #object_marking_refs=connector.mandiant_marking,
+        object_marking_refs=get_marking(id),
         allow_custom=True,
         custom_properties=custom_properties,
     )
